@@ -1,8 +1,8 @@
-# Fastpotify in Raycast
+# Spotifast in Raycast
 
-Raycast script commands for the running Fastpotify: play/pause, next,
+Raycast script commands for the running Spotifast: play/pause, next,
 previous, seek, volume, shuffle, repeat, and the playing track. They are thin
-wrappers around `fastpotify <verb>`, which talks to the instance already
+wrappers around `spotifast <verb>`, which talks to the instance already
 running rather than starting a second one.
 
 ## Installation
@@ -10,9 +10,9 @@ running rather than starting a second one.
 ### Requirements
 
 - macOS with [Raycast](https://www.raycast.com/) installed;
-- Fastpotify installed in `/Applications/Fastpotify.app` (or a custom binary
-  selected with `FASTPOTIFY_BIN`);
-- a Fastpotify build that supports the remote-control verbs listed below.
+- Spotifast installed in `/Applications/Spotifast.app` (or a custom binary
+  selected with `SPOTIFAST_BIN`);
+- a Spotifast build that supports the remote-control verbs listed below.
 
 ### Add the commands to Raycast
 
@@ -20,44 +20,47 @@ running rather than starting a second one.
 
    ```bash
    mkdir -p ~/Raycast
-   git clone https://github.com/Seigiard/fastpotify-raycast.git ~/Raycast/fastpotify-raycast
+   git clone https://github.com/Seigiard/spotifast-raycast.git ~/Raycast/spotifast-raycast
    ```
 
 2. Open **Raycast Settings → Extensions → Script Commands**.
-3. Click **Add Directories** and choose `~/Raycast/fastpotify-raycast`.
-4. Search Raycast for `Fastpotify`. Optionally assign aliases or hotkeys to
+3. Click **Add Directories** and choose `~/Raycast/spotifast-raycast`.
+4. Search Raycast for `Spotifast`. Optionally assign aliases or hotkeys to
    commands such as **Play / Pause**, **Next Track**, and **Now Playing**.
 
 To install updates later, run:
 
 ```bash
-git -C ~/Raycast/fastpotify-raycast pull
+git -C ~/Raycast/spotifast-raycast pull
 ```
 
-The scripts find the binary inside `/Applications/Fastpotify.app`. If your
-binary is elsewhere, set `FASTPOTIFY_BIN` in the environment Raycast uses.
+The scripts use `spotifast` or `fastpotify` from `PATH`, or the binary inside
+`/Applications/Spotifast.app` (still named `fastpotify` there). Installs
+updated from before the rename keep `/Applications/Fastpotify.app`, and that
+path works too. If your binary is elsewhere, set `SPOTIFAST_BIN` in the
+environment Raycast uses.
 
-They need a Fastpotify that answers the verbs below. That is not in a
+They need a Spotifast that answers the verbs below. That is not in a
 released build yet. The proposed upstream change was
-[Fastpotify PR #34](https://github.com/crmne/spotifast/pull/34), which was
+[Spotifast PR #34](https://github.com/crmne/spotifast/pull/34), which was
 closed without merging. Installing a released build over a compatible custom
-build removes the verbs, and the scripts will report "Fastpotify is not
+build removes the verbs, and the scripts will report "Spotifast is not
 installed" or "not running, or predates remote control".
 
 ## The commands underneath
 
-Every script is `fastpotify <verb>`, so the same verbs work from a terminal,
+Every script is `spotifast <verb>`, so the same verbs work from a terminal,
 a launcher, or a keyboard shortcut tool:
 
 ```
-fastpotify play-pause          fastpotify volume 40
-fastpotify play                fastpotify volume-up [percent]
-fastpotify pause               fastpotify volume-down [percent]
-fastpotify next                fastpotify mute
-fastpotify previous            fastpotify shuffle
-fastpotify seek 15             fastpotify repeat
-fastpotify seek -- -15         fastpotify show
-fastpotify now-playing [--raw]
+spotifast play-pause           spotifast volume 40
+spotifast play                 spotifast volume-up [percent]
+spotifast pause                spotifast volume-down [percent]
+spotifast next                 spotifast mute
+spotifast previous             spotifast shuffle
+spotifast seek 15              spotifast repeat
+spotifast seek -- -15          spotifast show
+spotifast now-playing [--raw]
 ```
 
 `now-playing` prints one readable line. `--raw` prints the fields
@@ -65,10 +68,10 @@ tab-separated — state, title, artists, album, position_ms, duration_ms,
 volume, shuffle, repeat — which is what the scripts read when they need one
 value.
 
-A verb exits non-zero and says so when Fastpotify is not running.
+A verb exits non-zero and says so when Spotifast is not running.
 
 ## Linux
 
-These scripts are macOS and Windows only. On Linux Fastpotify is an MPRIS
+These scripts are macOS and Windows only. On Linux Spotifast is an MPRIS
 player, so `playerctl --player=fastpotify play-pause` already does the same
 job, and the verbs above refuse to run rather than duplicating it.

@@ -7,14 +7,14 @@
 #
 # Optional parameters:
 # @raycast.icon 🎧
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 # @raycast.refreshTime 10s
 #
 # Documentation:
-# @raycast.description Show the track Fastpotify is playing.
-# @raycast.author Fastpotify
+# @raycast.description Show the track Spotifast is playing.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp now-playing

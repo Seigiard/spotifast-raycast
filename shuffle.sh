@@ -7,14 +7,14 @@
 #
 # Optional parameters:
 # @raycast.icon 🔀
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 #
 # Documentation:
-# @raycast.description Turn shuffle on or off in Fastpotify.
-# @raycast.author Fastpotify
+# @raycast.description Turn shuffle on or off in Spotifast.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp shuffle
 sleep 0.3

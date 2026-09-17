@@ -1,30 +1,36 @@
 #!/bin/bash
-# Shared by the Fastpotify Raycast scripts. Not a command itself: it carries
+# Shared by the Spotifast Raycast scripts. Not a command itself: it carries
 # no @raycast metadata, so Raycast lists everything here except this file.
 #
-# Every command is `fastpotify <verb>` against the running app, so a script
+# Every command is `spotifast <verb>` against the running app, so a script
 # is one line and Raycast never has to know the protocol.
 
-# Where the binary is. Set FASTPOTIFY_BIN to override, e.g. for a build that
+# Where the binary is. Set SPOTIFAST_BIN to override, e.g. for a build that
 # is not the installed one.
-if [ -z "${FASTPOTIFY_BIN:-}" ]; then
+#
+# Spotifast.app still ships its executable as `fastpotify`, and installs
+# updated from before the rename keep the Fastpotify.app bundle path.
+if [ -z "${SPOTIFAST_BIN:-}" ]; then
     for candidate in \
+        "$(command -v spotifast 2>/dev/null)" \
         "$(command -v fastpotify 2>/dev/null)" \
+        "/Applications/Spotifast.app/Contents/MacOS/fastpotify" \
+        "$HOME/Applications/Spotifast.app/Contents/MacOS/fastpotify" \
         "/Applications/Fastpotify.app/Contents/MacOS/fastpotify" \
         "$HOME/Applications/Fastpotify.app/Contents/MacOS/fastpotify"; do
         if [ -n "$candidate" ] && [ -x "$candidate" ]; then
-            FASTPOTIFY_BIN="$candidate"
+            SPOTIFAST_BIN="$candidate"
             break
         fi
     done
 fi
 
 fp() {
-    if [ -z "${FASTPOTIFY_BIN:-}" ]; then
-        echo "Fastpotify is not installed"
+    if [ -z "${SPOTIFAST_BIN:-}" ]; then
+        echo "Spotifast is not installed"
         exit 1
     fi
-    "$FASTPOTIFY_BIN" "$@"
+    "$SPOTIFAST_BIN" "$@"
 }
 
 # One field of the raw snapshot: 1 state, 2 title, 3 artists, 4 album,

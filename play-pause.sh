@@ -7,14 +7,14 @@
 #
 # Optional parameters:
 # @raycast.icon ⏯
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 #
 # Documentation:
-# @raycast.description Toggle playback in Fastpotify.
-# @raycast.author Fastpotify
+# @raycast.description Toggle playback in Spotifast.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp play-pause
 sleep 0.3

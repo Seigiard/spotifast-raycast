@@ -7,15 +7,15 @@
 #
 # Optional parameters:
 # @raycast.icon 🔉
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 # @raycast.argument1 { "type": "text", "placeholder": "percent", "optional": true }
 #
 # Documentation:
-# @raycast.description Lower Fastpotify's volume, by 10 points unless told otherwise.
-# @raycast.author Fastpotify
+# @raycast.description Lower Spotifast's volume, by 10 points unless told otherwise.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp volume-down "${1:-10}"
 sleep 0.3

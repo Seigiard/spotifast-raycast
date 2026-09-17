@@ -7,14 +7,14 @@
 #
 # Optional parameters:
 # @raycast.icon 🔇
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 #
 # Documentation:
-# @raycast.description Mute Fastpotify, or restore the volume it had.
-# @raycast.author Fastpotify
+# @raycast.description Mute Spotifast, or restore the volume it had.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp mute
 sleep 0.3

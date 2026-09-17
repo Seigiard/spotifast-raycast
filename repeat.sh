@@ -7,14 +7,14 @@
 #
 # Optional parameters:
 # @raycast.icon 🔁
-# @raycast.packageName Fastpotify
+# @raycast.packageName Spotifast
 #
 # Documentation:
-# @raycast.description Step Fastpotify through off, repeat all, and repeat one.
-# @raycast.author Fastpotify
+# @raycast.description Step Spotifast through off, repeat all, and repeat one.
+# @raycast.author Spotifast
 
 set -euo pipefail
-source "$(dirname "$0")/_fastpotify.sh"
+source "$(dirname "$0")/_spotifast.sh"
 
 fp repeat
 sleep 0.3
