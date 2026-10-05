@@ -7,6 +7,7 @@ export default function Command(props: LaunchProps<{ arguments: Arguments.SeekBa
     const seconds = parseAmount(props.arguments.seconds, 15);
     const offsetMs = -seconds * 1000;
     const track = await runAndSettle(["seek", "--", String(-seconds)], seekLanded(offsetMs));
+
     return track ? `⏪ ${formatClock(track.positionMs)} / ${formatClock(track.durationMs)}` : "Nothing playing";
   });
 }

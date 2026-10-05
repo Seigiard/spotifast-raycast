@@ -17,6 +17,7 @@ import {
 } from "./spotifast";
 
 const TITLE_LIMIT = 40;
+
 const REPEAT_MODES: RepeatMode[] = ["off", "context", "track"];
 
 type PlayerState =
@@ -38,6 +39,7 @@ export default function Command(): JSX.Element {
     } catch (error) {
       await showSpotifastError(error);
     }
+
     player.revalidate();
   }
 
@@ -183,9 +185,11 @@ export default function Command(): JSX.Element {
 async function loadPlayerState(): Promise<PlayerState> {
   try {
     const track = await getNowPlaying();
+
     return track ? { kind: "playing", track } : { kind: "idle" };
   } catch (error) {
     if (error instanceof SpotifastNotRunningError) return { kind: "not-running" };
+
     if (error instanceof SpotifastNotInstalledError) return { kind: "not-installed" };
     throw error;
   }
