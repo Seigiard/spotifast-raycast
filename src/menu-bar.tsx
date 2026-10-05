@@ -37,7 +37,7 @@ export default function Command(): JSX.Element {
     try {
       await runAndSettle(args, changed);
     } catch (error) {
-      await showSpotifastError(error);
+      await showSpotifastError(error instanceof Error ? error : new Error(String(error)));
     }
 
     player.revalidate();
@@ -87,7 +87,11 @@ export default function Command(): JSX.Element {
               subtitle={track.artists}
               icon={track.artUrl ? { source: track.artUrl, mask: Image.Mask.RoundedRectangle } : Icon.Music}
               tooltip={track.album}
-              onAction={() => openSpotifast().catch(showSpotifastError)}
+              onAction={() =>
+                openSpotifast().catch((error) =>
+                  showSpotifastError(error instanceof Error ? error : new Error(String(error))),
+                )
+              }
             />
           </MenuBarExtra.Section>
           <MenuBarExtra.Section>
@@ -171,7 +175,11 @@ export default function Command(): JSX.Element {
           <MenuBarExtra.Item
             title="Open Spotifast"
             icon={Icon.AppWindow}
-            onAction={() => openSpotifast().catch(showSpotifastError)}
+            onAction={() =>
+              openSpotifast().catch((error) =>
+                showSpotifastError(error instanceof Error ? error : new Error(String(error))),
+              )
+            }
           />
         )}
         <MenuBarExtra.Item title="Configure Command" icon={Icon.Gear} onAction={openCommandPreferences} />

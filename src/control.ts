@@ -4,7 +4,7 @@ import { SpotifastNotInstalledError, SpotifastNotRunningError } from "./spotifas
 
 const DOWNLOAD_URL = "https://spotifast.rocks/download/";
 
-export async function showSpotifastError(error: unknown): Promise<void> {
+export async function showSpotifastError(error: Error): Promise<void> {
   if (error instanceof SpotifastNotInstalledError) {
     const primaryAction: Toast.ActionOptions = {
       title: "Download Spotifast",
@@ -42,7 +42,7 @@ export async function control(body: () => Promise<string>): Promise<void> {
     await refreshMenuBar();
     await showHUD(message);
   } catch (error) {
-    await showSpotifastError(error);
+    await showSpotifastError(error instanceof Error ? error : new Error(String(error)));
   }
 }
 

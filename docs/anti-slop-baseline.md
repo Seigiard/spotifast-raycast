@@ -9,4 +9,6 @@ The unchanged source at `ddc41e9d3c2ba88461c7c3c3c6a45b1745816e44` produces 59 a
 
 Raycast's original lint completes before Oxlint reports the source findings. The Raycast build and TypeScript typecheck pass. All 18 generic rules and native `oxc/no-accumulating-spread` stay enabled as errors. No direct Effect dependency is declared.
 
-This draft needs a separate spacing cleanup and a reviewed error-boundary contract before it can be made ready. The settings change includes no application edits or suppressions.
+The cleanup resolves all 59 findings. Spacing fixes are separate from semantic changes. `showSpotifastError` now accepts an `Error`; catch boundaries preserve existing Error instances and turn other rejection values into an Error before reporting them. The domain-specific download action and not-running HUD remain unchanged.
+
+`npm run lint` and `npm run typecheck` pass with all rules still enabled. No suppressions were added. Raycast's formatter and Oxlint autofix leave the cleaned source stable on a second pass.

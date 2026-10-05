@@ -7,6 +7,6 @@ export default async function Command(): Promise<void> {
     await closeMainWindow();
     await openSpotifast();
   } catch (error) {
-    await showSpotifastError(error);
+    await showSpotifastError(error instanceof Error ? error : new Error(String(error)));
   }
 }
