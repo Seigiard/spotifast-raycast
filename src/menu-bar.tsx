@@ -17,6 +17,7 @@ import {
 } from "./spotifast";
 
 const TITLE_LIMIT = 40;
+
 const REPEAT_MODES: RepeatMode[] = ["off", "context", "track"];
 
 type PlayerState =
@@ -36,8 +37,9 @@ export default function Command(): JSX.Element {
     try {
       await runAndSettle(args, changed);
     } catch (error) {
-      await showSpotifastError(error);
+      await showSpotifastError(error instanceof Error ? error : new Error(String(error)));
     }
+
     player.revalidate();
   }
 
@@ -85,7 +87,11 @@ export default function Command(): JSX.Element {
               subtitle={track.artists}
               icon={track.artUrl ? { source: track.artUrl, mask: Image.Mask.RoundedRectangle } : Icon.Music}
               tooltip={track.album}
-              onAction={() => openSpotifast().catch(showSpotifastError)}
+              onAction={() =>
+                openSpotifast().catch((error) =>
+                  showSpotifastError(error instanceof Error ? error : new Error(String(error))),
+                )
+              }
             />
           </MenuBarExtra.Section>
           <MenuBarExtra.Section>
@@ -169,7 +175,11 @@ export default function Command(): JSX.Element {
           <MenuBarExtra.Item
             title="Open Spotifast"
             icon={Icon.AppWindow}
-            onAction={() => openSpotifast().catch(showSpotifastError)}
+            onAction={() =>
+              openSpotifast().catch((error) =>
+                showSpotifastError(error instanceof Error ? error : new Error(String(error))),
+              )
+            }
           />
         )}
         <MenuBarExtra.Item title="Configure Command" icon={Icon.Gear} onAction={openCommandPreferences} />
@@ -183,9 +193,11 @@ export default function Command(): JSX.Element {
 async function loadPlayerState(): Promise<PlayerState> {
   try {
     const track = await getNowPlaying();
+
     return track ? { kind: "playing", track } : { kind: "idle" };
   } catch (error) {
     if (error instanceof SpotifastNotRunningError) return { kind: "not-running" };
+
     if (error instanceof SpotifastNotInstalledError) return { kind: "not-installed" };
     throw error;
   }

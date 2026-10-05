@@ -6,6 +6,7 @@ export default function Command(props: LaunchProps<{ arguments: Arguments.SetVol
   return control(async () => {
     const percent = Math.min(parseAmount(props.arguments.percent, 0), 100);
     const track = await runAndSettle(["volume", String(percent)], (_, after) => after?.volume === percent);
+
     return `🎚 ${track?.volume ?? percent}%`;
   });
 }

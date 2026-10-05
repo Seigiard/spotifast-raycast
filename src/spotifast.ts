@@ -46,11 +46,13 @@ export type Device = {
 // Current builds; `me.paolino.fastpotify` is the bundle ID from before the
 // app's rename, kept for installs that predate it.
 const BUNDLE_IDS = ["rocks.spotifast.Spotifast", "me.paolino.fastpotify"];
+
 const SEEK_EDGE_MS = 1500;
 
 function isExecutable(path: string): boolean {
   try {
     accessSync(path, constants.X_OK);
+
     return true;
   } catch {
     return false;
@@ -64,33 +66,43 @@ function isExecutable(path: string): boolean {
 // so the usual command locations are listed outright.
 function binaryCandidates(): string[] {
   const home = homedir();
+
   const bundles = ["/Applications", join(home, "Applications")].flatMap((dir) =>
     ["Spotifast.app", "Fastpotify.app"].flatMap((app) =>
       ["Spotifast", "fastpotify"].map((name) => join(dir, app, "Contents/MacOS", name)),
     ),
   );
+
   const binDirs = ["/opt/homebrew/bin", "/usr/local/bin", join(home, ".cargo/bin"), join(home, ".nix-profile/bin")];
   const commands = binDirs.flatMap((dir) => ["spotifast", "fastpotify"].map((name) => join(dir, name)));
+
   return [...bundles, ...commands];
 }
 
 export function findBinary(): string {
   const { binaryPath } = getPreferenceValues<Preferences>();
   const configured = binaryPath?.trim();
+
   if (configured) {
     if (!isExecutable(configured)) throw new SpotifastNotInstalledError();
+
     return configured;
   }
+
   const found = binaryCandidates().find(isExecutable);
+
   if (!found) throw new SpotifastNotInstalledError();
+
   return found;
 }
 
 export function run(...args: string[]): Promise<string> {
   const binary = findBinary();
+
   return new Promise((resolve, reject) => {
     execFile(binary, args, { timeout: 5000 }, (error, stdout, stderr) => {
       if (!error) return resolve(stdout);
+
       if (stderr.includes("not running")) return reject(new SpotifastNotRunningError());
       reject(new Error(stderr.trim() || error.message));
     });
@@ -101,7 +113,9 @@ export function run(...args: string[]): Promise<string> {
 export function parseNowPlaying(snapshot: string): NowPlaying | null {
   const fields = snapshot.replace(/\n$/, "").split("\t");
   const [state, title, artists, album, position, duration, volume, shuffle, repeat, artUrl, saved, device] = fields;
+
   if (state !== "playing" && state !== "paused") return null;
+
   return {
     state,
     title: title ?? "",
@@ -124,6 +138,7 @@ export async function getNowPlaying(): Promise<NowPlaying | null> {
 
 export async function getDevices(): Promise<Device[]> {
   const devices: Partial<Device>[] = JSON.parse(await run("devices", "--raw"));
+
   return devices.map((device) => ({
     id: device.id ?? "",
     name: device.name ?? "",
@@ -145,11 +160,14 @@ export async function runAndSettle(
   const before = await getNowPlaying();
   await run(...args);
   let after = before;
+
   for (let attempt = 0; attempt < 8; attempt++) {
     await new Promise((resolve) => setTimeout(resolve, 150));
     after = await getNowPlaying();
+
     if (changed(before, after)) break;
   }
+
   return after;
 }
 
@@ -157,6 +175,7 @@ export async function runAndSettle(
 function bundleOf(binary: string): string | null {
   const marker = "/Contents/MacOS/";
   const index = binary.indexOf(marker);
+
   return index === -1 ? null : binary.slice(0, index);
 }
 
@@ -171,12 +190,15 @@ export async function openSpotifast(): Promise<void> {
     // command keeps driving the other one's executable.
     const bundle = bundleOf(findBinary());
     const targets = bundle ? [["-a", bundle]] : BUNDLE_IDS.map((id) => ["-b", id]);
+
     for (const args of targets) {
       const opened = await new Promise<boolean>((resolve) =>
         execFile("open", args, (openError) => resolve(!openError)),
       );
+
       if (opened) return;
     }
+
     throw new SpotifastNotInstalledError();
   }
 }
@@ -191,15 +213,19 @@ export async function openSpotifast(): Promise<void> {
 export function seekLanded(offsetMs: number): (before: NowPlaying | null, after: NowPlaying | null) => boolean {
   return (before, after) => {
     if (!before || !after) return before !== after;
+
     if (before.title !== after.title) return true;
     const moved = after.positionMs - before.positionMs;
+
     if (offsetMs >= 0) return moved >= offsetMs / 2 || after.positionMs >= after.durationMs - SEEK_EDGE_MS;
+
     return -moved >= -offsetMs / 2 || after.positionMs <= SEEK_EDGE_MS;
   };
 }
 
 export function formatClock(ms: number): string {
   const seconds = Math.floor(ms / 1000);
+
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 

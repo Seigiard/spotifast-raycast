@@ -4,19 +4,24 @@ import { SpotifastNotInstalledError, SpotifastNotRunningError } from "./spotifas
 
 const DOWNLOAD_URL = "https://spotifast.rocks/download/";
 
-export async function showSpotifastError(error: unknown): Promise<void> {
+export async function showSpotifastError(error: Error): Promise<void> {
   if (error instanceof SpotifastNotInstalledError) {
     const primaryAction: Toast.ActionOptions = {
       title: "Download Spotifast",
       onAction: () => open(DOWNLOAD_URL),
     };
+
     await showFailureToast(error, { title: error.message, message: "Set its path in preferences", primaryAction });
+
     return;
   }
+
   if (error instanceof SpotifastNotRunningError) {
     await showHUD("Spotifast is not running");
+
     return;
   }
+
   await showFailureToast(error, { title: "Spotifast command failed" });
 }
 
@@ -37,15 +42,18 @@ export async function control(body: () => Promise<string>): Promise<void> {
     await refreshMenuBar();
     await showHUD(message);
   } catch (error) {
-    await showSpotifastError(error);
+    await showSpotifastError(error instanceof Error ? error : new Error(String(error)));
   }
 }
 
 /** Parses an optional numeric argument, falling back when it is empty. */
 export function parseAmount(value: string | undefined, fallback: number): number {
   const trimmed = value?.trim();
+
   if (!trimmed) return fallback;
   const amount = Number(trimmed);
+
   if (!Number.isFinite(amount) || amount < 0) throw new Error(`"${trimmed}" is not a positive number`);
+
   return Math.round(amount);
 }

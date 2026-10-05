@@ -245,10 +245,12 @@
     "@raycast/utils": "^2.2.2"
   },
   "devDependencies": {
+    "@oxlint/plugins": "1.87.0",
     "@raycast/eslint-config": "^2.0.4",
     "@types/node": "^22.17.2",
     "@types/react": "^19.1.10",
     "eslint": "^9.33.0",
+    "oxlint": "1.87.0",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2"
   },
@@ -256,7 +258,9 @@
     "build": "ray build",
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
-    "lint": "ray lint",
+    "lint": "ray lint && npm run lint:anti-slop",
+    "lint:anti-slop": "oxlint src",
+    "typecheck": "ray build && tsc --noEmit",
     "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1",
     "publish": "npx @raycast/api@latest publish"
   }

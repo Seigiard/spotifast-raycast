@@ -24,7 +24,7 @@ export default function Command(): JSX.Element {
       await refreshMenuBar();
       await showHUD(`Playing on ${device.name}`);
     } catch (transferError) {
-      await showSpotifastError(transferError);
+      await showSpotifastError(transferError instanceof Error ? transferError : new Error(String(transferError)));
     }
   }
 
@@ -40,7 +40,11 @@ export default function Command(): JSX.Element {
                 <Action
                   title="Open Spotifast"
                   icon={Icon.AppWindow}
-                  onAction={() => openSpotifast().then(revalidate).catch(showSpotifastError)}
+                  onAction={() =>
+                    openSpotifast()
+                      .then(revalidate)
+                      .catch((error) => showSpotifastError(error instanceof Error ? error : new Error(String(error))))
+                  }
                 />
               ) : (
                 <Action.OpenInBrowser title="Download Spotifast" url="https://spotifast.rocks/download/" />
